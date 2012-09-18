@@ -3,8 +3,16 @@ import re
 import sys
 import code
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+try:
+    from PySide.QtGui  import *
+    from PySide.QtCore import *
+except ImportError:
+    try:
+        from PyQt4.QtGui  import *
+        from PyQt4.QtCore import *
+    except ImportError:
+        print "ImportError: You don't have PySide or PyQt4"
+        sys.exit()
 
 class MyInterpreter(QWidget):
 
