@@ -1,5 +1,4 @@
 from PySide.QtGui  import *
-
 from QIPythonWidget import QIPythonWidget
 
 class Main(QWidget):
