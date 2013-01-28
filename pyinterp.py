@@ -1,49 +1,30 @@
-import atexit
-
-from PySide.QtCore import *
 from PySide.QtGui  import *
 
-from IPython.zmq.ipkernel import IPKernelApp
-from IPython.lib.kernel import find_connection_file
-from IPython.frontend.qt.kernelmanager import QtKernelManager
-from IPython.frontend.qt.console.rich_ipython_widget import RichIPythonWidget
-from IPython.config.application import catch_config_error
+from QIPythonWidget import QIPythonWidget
+
+class Main(QWidget):
+
+    def __init__(self, parent=None):
+        super(Main, self).__init__(parent)
+        layout = QVBoxLayout(self)
+
+        self.button = QPushButton('Another widget')
+
+        # Just like any other widget
+        self.iPython = QIPythonWidget()
+
+        layout.addWidget(self.button)
+        layout.addWidget(self.iPython)
 
 
-class QIPythonWidget(RichIPythonWidget):
+app  = QApplication([])
+main = Main()
 
-    class KernelApp(IPKernelApp):
-        @catch_config_error
-        def initialize(self, argv=[]):
-            super(QIPythonWidget.KernelApp, self).initialize(argv)
-            self.kernel.eventloop = self.loop_qt4_nonblocking
-            self.kernel.start()
-            self.start()
+# assigen vars to user namespace
+namespace = main.iPython.get_user_namespace()
+namespace['main']    = main
+namespace['foobar']  = 'value for foobar'
+namespace['another'] = 'another test'
 
-        def loop_qt4_nonblocking(self, kernel):
-            kernel.timer = QTimer()
-            kernel.timer.timeout.connect(kernel.do_one_iteration)
-            kernel.timer.start(1000*kernel._poll_interval)
-
-        def get_connection_file(self):
-            return self.connection_file
-
-        def get_user_namespace(self):
-            return self.kernel.shell.user_ns
-
-    def __init__(self, parent=None, colors='linux', instance_args=[]):
-        super(QIPythonWidget, self).__init__()
-        self.app = self.KernelApp.instance(argv=instance_args)
-        self.app.initialize()
-        self.set_default_style(colors=colors)
-        self.connect_kernel(self.app.get_connection_file())
-
-    def connect_kernel(self, conn, heartbeat=False):
-        km = QtKernelManager(connection_file=find_connection_file(conn))
-        km.load_connection_file()
-        km.start_channels(hb=heartbeat)
-        self.kernel_manager = km
-        atexit.register(self.kernel_manager.cleanup_connection_file)
-
-    def get_user_namespace(self):
-        return self.app.get_user_namespace()
+main.show()
+app.exec_()
