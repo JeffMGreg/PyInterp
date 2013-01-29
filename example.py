@@ -17,9 +17,10 @@ class Main(QWidget):
 
 
 app  = QApplication([])
+
+
 main = Main()
 
-# assigen vars to user namespace
 namespace = main.iPython.get_user_namespace()
 namespace['main']    = main
 namespace['foobar']  = 'value for foobar'
