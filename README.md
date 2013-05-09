@@ -9,8 +9,8 @@ This was build from a stackoverflow <a href="http://stackoverflow.com/questions/
 ## Example
 
 ```python
-from PySide.QtGui  import *
 from QIPythonWidget import QIPythonWidget
+from PySide.QtGui  import *
 
 class Main(QWidget):
 
@@ -39,3 +39,7 @@ namespace['another'] = 'another test'
 main.show()
 app.exec_()
 ```
+
+## Using pyqt instead of pyside
+To use PyQt4 instead of pyside, it's necessary to set the QT_API environment variable to "pyqt".
+It's also necessary for your code to use <a href="http://pyqt.sourceforge.net/Docs/PyQt4/incompatible_apis.html">pyqt API v2</a> (not default in Python 2.x), which replaces some data types such as QString with built-in Python data types. 
